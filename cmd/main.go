@@ -5,6 +5,11 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/indraalfauzan/monitoring_skripsi_golang/config"
+
+	"github.com/indraalfauzan/monitoring_skripsi_golang/handler"
+	"github.com/indraalfauzan/monitoring_skripsi_golang/repository"
+	"github.com/indraalfauzan/monitoring_skripsi_golang/usecase"
 	"github.com/joho/godotenv"
 )
 
@@ -27,12 +32,21 @@ func main() {
 	if err := r.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
 		log.Fatal("Failed to set trusted proxies:", err)
 	}
+	// Connect DB
+	db, err := config.ConnectDB()
+	if err != nil {
+		log.Fatal("Failed to connect to DB:", err)
+	}
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello World",
-		})
-	})
+	// // Auto migrate table
+	// _ = db.AutoMigrate(&entity.User{}, &entity.Role{})
+
+	// DI wiring
+	userRepo := repository.NewUserRepository(db)
+	userUC := usecase.NewUserUseCase(userRepo)
+
+	// Register all routes
+	handler.RegisterRoutes(r, userUC)
 
 	port := os.Getenv("PORT")
 	if port == "" {
