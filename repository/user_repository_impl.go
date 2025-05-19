@@ -10,7 +10,7 @@ type userRepositoryImpl struct {
 	db *gorm.DB
 }
 
-func (u *userRepositoryImpl) Create(user *entity.User) (*entity.User, error) {
+func (u *userRepositoryImpl) CreateUser(user *entity.User) (*entity.User, error) {
 	err := u.db.Create(user).Error
 	if err != nil {
 		return &entity.User{}, err
@@ -27,7 +27,7 @@ func (u *userRepositoryImpl) Create(user *entity.User) (*entity.User, error) {
 // GetUserByID implements domain.UserRepository.
 func (u *userRepositoryImpl) GetUserByEmail(email string) (*entity.User, error) {
 	var user entity.User
-	err := u.db.Preload("Role").Where("email = ?", email).First(&user).Error
+	err := u.db.Preload("Role").Where("email = ? ", email).First(&user).Error
 
 	if err != nil {
 		return nil, nil
@@ -35,6 +35,15 @@ func (u *userRepositoryImpl) GetUserByEmail(email string) (*entity.User, error) 
 	return &user, nil
 }
 
+func (u *userRepositoryImpl) GetUserByEmailandRole(email string, roleID int) (*entity.User, error) {
+	var user entity.User
+	err := u.db.Preload("Role").Where("email = ? AND role_id = ?", email, roleID).First(&user).Error
+
+	if err != nil {
+		return nil, nil
+	}
+	return &user, nil
+}
 func NewUserRepository(db *gorm.DB) domain.UserRepository {
 	return &userRepositoryImpl{
 		db: db,

@@ -20,7 +20,48 @@ func NewAuthHandler(u domain.UserUseCase) *AuthHandler {
 	return &AuthHandler{UserUsecase: u}
 }
 
-func (h *AuthHandler) Register(c *gin.Context) {
+func (h *AuthHandler) RegisterMhs(c *gin.Context) {
+	var req struct {
+		Username string `json:"username"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		code, msg := apperror.DetermineErrorType(apperror.ValidationError("request body"))
+		WriteJSONResponse(c, code, msg, nil)
+		return
+	}
+
+	user := &entity.User{
+		Username: req.Username,
+		Email:    req.Email,
+		Password: req.Password,
+	}
+
+	user, err := h.UserUsecase.RegisterMhs(user)
+	if err != nil {
+		code, msg := apperror.DetermineErrorType(err)
+		WriteJSONResponse(c, code, msg, nil)
+		return
+	}
+
+	// Fetch Role Name (safe)
+	roleName := ""
+	if user.Role.ID != 0 {
+		roleName = user.Role.Name
+	}
+
+	res := RegisterResponse{
+		Username: user.Username,
+		Email:    user.Email,
+		RoleName: roleName,
+	}
+
+	WriteJSONResponse(c, http.StatusCreated, "registered", res)
+}
+
+func (h *AuthHandler) RegisterUser(c *gin.Context) {
 	var req struct {
 		Username string `json:"username"`
 		Email    string `json:"email"`
@@ -41,7 +82,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		RoleID:   req.RoleID,
 	}
 
-	user, err := h.UserUsecase.Register(user)
+	user, err := h.UserUsecase.RegisterUser(user)
 	if err != nil {
 		code, msg := apperror.DetermineErrorType(err)
 		WriteJSONResponse(c, code, msg, nil)
