@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/indraalfauzan/monitoring_skripsi_golang/domain"
+	domain "github.com/indraalfauzan/monitoring_skripsi_golang/domain/mahasiswa"
 	"github.com/indraalfauzan/monitoring_skripsi_golang/entity"
 	"gorm.io/gorm"
 )

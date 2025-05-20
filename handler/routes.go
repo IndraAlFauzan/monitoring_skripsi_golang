@@ -2,12 +2,13 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/indraalfauzan/monitoring_skripsi_golang/domain"
+	mhsDomain "github.com/indraalfauzan/monitoring_skripsi_golang/domain/mahasiswa"
+	user "github.com/indraalfauzan/monitoring_skripsi_golang/domain/user"
 
 	"github.com/indraalfauzan/monitoring_skripsi_golang/middleware"
 )
 
-func RegisterRoutes(r *gin.Engine, userUC domain.UserUseCase, mahasiswaUC domain.MahasiswaProfileUseCase) {
+func RegisterRoutes(r *gin.Engine, userUC user.UserUseCase, mahasiswaUC mhsDomain.MahasiswaProfileUseCase) {
 	authHandler := NewAuthHandler(userUC)
 	mahasiswaHandler := NewMahasiswaHandler(mahasiswaUC)
 

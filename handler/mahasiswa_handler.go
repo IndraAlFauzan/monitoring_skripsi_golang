@@ -6,8 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/indraalfauzan/monitoring_skripsi_golang/apperror"
-	"github.com/indraalfauzan/monitoring_skripsi_golang/domain"
+	domain "github.com/indraalfauzan/monitoring_skripsi_golang/domain/mahasiswa"
 	"github.com/indraalfauzan/monitoring_skripsi_golang/entity"
+	"github.com/indraalfauzan/monitoring_skripsi_golang/response"
 )
 
 type MahasiswaHandler struct {
@@ -28,14 +29,14 @@ func (h *MahasiswaHandler) CreateProfile(c *gin.Context) {
 	// Handle file
 	file, err := c.FormFile("photo")
 	if err != nil {
-		WriteJSONResponse(c, http.StatusBadRequest, "Photo is required", nil)
+		response.WriteJSONResponse(c, http.StatusBadRequest, "Photo is required", nil)
 		return
 	}
 
 	// Simpan file
 	path := "uploads/" + file.Filename
 	if err := c.SaveUploadedFile(file, path); err != nil {
-		WriteJSONResponse(c, http.StatusInternalServerError, "Failed to upload file", nil)
+		response.WriteJSONResponse(c, http.StatusInternalServerError, "Failed to upload file", nil)
 		return
 	}
 
@@ -51,16 +52,16 @@ func (h *MahasiswaHandler) CreateProfile(c *gin.Context) {
 	if err != nil {
 		code, msg := apperror.DetermineErrorType(err)
 		if code == http.StatusBadRequest {
-			WriteJSONResponse(c, code, msg, nil)
+			response.WriteJSONResponse(c, code, msg, nil)
 			return
 		}
 		if code == http.StatusInternalServerError {
-			WriteJSONResponse(c, http.StatusInternalServerError, "Failed to save profile", nil)
+			response.WriteJSONResponse(c, http.StatusInternalServerError, "Failed to save profile", nil)
 			return
 		}
 	}
 
-	WriteJSONResponse(c, http.StatusCreated, "Profile created", result)
+	response.WriteJSONResponse(c, http.StatusCreated, "Profile created", result)
 }
 
 func (h *MahasiswaHandler) GetProfile(c *gin.Context) {
@@ -68,11 +69,11 @@ func (h *MahasiswaHandler) GetProfile(c *gin.Context) {
 
 	profile, err := h.usecase.GetProfile(userID)
 	if err != nil {
-		WriteJSONResponse(c, http.StatusNotFound, "Profile not found", nil)
+		response.WriteJSONResponse(c, http.StatusNotFound, "Profile not found", nil)
 		return
 	}
 
-	WriteJSONResponse(c, http.StatusOK, "Profile retrieved", profile)
+	response.WriteJSONResponse(c, http.StatusOK, "Profile retrieved", profile)
 }
 
 func (h *MahasiswaHandler) UpdateProfile(c *gin.Context) {
@@ -89,7 +90,7 @@ func (h *MahasiswaHandler) UpdateProfile(c *gin.Context) {
 	if err == nil {
 		path := "uploads/" + file.Filename
 		if err := c.SaveUploadedFile(file, path); err != nil {
-			WriteJSONResponse(c, http.StatusInternalServerError, "Failed to upload file", nil)
+			response.WriteJSONResponse(c, http.StatusInternalServerError, "Failed to upload file", nil)
 			return
 		}
 		photoPath = path
@@ -108,9 +109,9 @@ func (h *MahasiswaHandler) UpdateProfile(c *gin.Context) {
 	updated, err := h.usecase.UpdateProfile(profile)
 	if err != nil {
 		code, msg := apperror.DetermineErrorType(err)
-		WriteJSONResponse(c, code, msg, nil)
+		response.WriteJSONResponse(c, code, msg, nil)
 		return
 	}
 
-	WriteJSONResponse(c, http.StatusOK, "Profile updated", updated)
+	response.WriteJSONResponse(c, http.StatusOK, "Profile updated", updated)
 }

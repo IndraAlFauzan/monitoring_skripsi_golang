@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"github.com/indraalfauzan/monitoring_skripsi_golang/apperror"
-	"github.com/indraalfauzan/monitoring_skripsi_golang/domain"
+	domain "github.com/indraalfauzan/monitoring_skripsi_golang/domain/user"
 	"github.com/indraalfauzan/monitoring_skripsi_golang/entity"
 	"github.com/indraalfauzan/monitoring_skripsi_golang/utils"
 )
@@ -108,7 +108,7 @@ func (u *userUseCaseImpl) RegisterMhs(user *entity.User) (*entity.User, error) {
 	}
 
 	user.Password = hash
-	user.RoleID = 1 // Set default role ID for MHS
+	user.RoleID = 2 // Set default role ID for MHS
 	user, err = u.userRepo.CreateUser(user)
 	if err != nil {
 		return &entity.User{}, err

@@ -32,10 +32,19 @@ func AuthMiddleware() gin.HandlerFunc {
 			return []byte(secret), nil
 		})
 
-		if err != nil || !token.Valid {
+		if err != nil {
+			if err == jwt.ErrTokenExpired {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+					"status_code": http.StatusUnauthorized,
+					"message":     "Token expired",
+					"data":        nil,
+				})
+				return
+			}
+
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"status_code": http.StatusUnauthorized,
-				"message":     "Unauthorized or invalid token",
+				"message":     "Invalid token",
 				"data":        nil,
 			})
 			return
@@ -53,6 +62,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		ctx.Set("user_id", int(claims["user_id"].(float64)))
 		ctx.Set("role", claims["role"].(string))
+
 		ctx.Next()
 	}
 }

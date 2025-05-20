@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"github.com/indraalfauzan/monitoring_skripsi_golang/apperror"
-	"github.com/indraalfauzan/monitoring_skripsi_golang/domain"
+	domain "github.com/indraalfauzan/monitoring_skripsi_golang/domain/mahasiswa"
 	"github.com/indraalfauzan/monitoring_skripsi_golang/entity"
 )
 
