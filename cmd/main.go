@@ -48,8 +48,11 @@ func main() {
 	mhsRepo := repository.NewMahasiswaProfileRepository(db)
 	mhsUC := usecase.NewMahasiswaProfileUsecase(mhsRepo)
 
+	profileTARepo := repository.NewProfilTARepository(db)
+	profileTAUC := usecase.NewProfilTAUseCase(profileTARepo)
+
 	// Register all routes
-	handler.RegisterRoutes(r, userUC, mhsUC)
+	handler.RegisterRoutes(r, userUC, mhsUC, profileTAUC)
 
 	port := os.Getenv("PORT")
 	if port == "" {

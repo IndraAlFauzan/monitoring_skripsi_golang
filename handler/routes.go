@@ -8,9 +8,10 @@ import (
 	"github.com/indraalfauzan/monitoring_skripsi_golang/middleware"
 )
 
-func RegisterRoutes(r *gin.Engine, userUC user.UserUseCase, mahasiswaUC mhsDomain.MahasiswaProfileUseCase) {
+func RegisterRoutes(r *gin.Engine, userUC user.UserUseCase, mahasiswaUC mhsDomain.MahasiswaProfileUseCase, profileTAUC mhsDomain.ProfileTAUseCase) {
 	authHandler := NewAuthHandler(userUC)
 	mahasiswaHandler := NewMahasiswaHandler(mahasiswaUC)
+	profileTAHandler := NewProfilTAHandler(profileTAUC)
 
 	auth := r.Group("/auth")
 	{
@@ -27,7 +28,7 @@ func RegisterRoutes(r *gin.Engine, userUC user.UserUseCase, mahasiswaUC mhsDomai
 	admin := protected.Group("/admin")
 	admin.Use(middleware.RoleGuard("Admin"), middleware.AuthMiddleware())
 	{
-		admin.POST("/register", authHandler.RegisterUser)
+		admin.POST("/add-user", authHandler.RegisterUser)
 	}
 
 	mahasiswa := protected.Group("/mahasiswa")
@@ -36,6 +37,7 @@ func RegisterRoutes(r *gin.Engine, userUC user.UserUseCase, mahasiswaUC mhsDomai
 		mahasiswa.POST("/profile", mahasiswaHandler.CreateProfile)
 		mahasiswa.GET("/profile", mahasiswaHandler.GetProfile)
 		mahasiswa.PUT("/profile", mahasiswaHandler.UpdateProfile)
+		mahasiswa.POST("/profile/ta", profileTAHandler.AjukanTA)
 	}
 
 }

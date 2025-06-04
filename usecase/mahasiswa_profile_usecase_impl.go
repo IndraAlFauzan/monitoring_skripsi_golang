@@ -18,19 +18,19 @@ func (u *mahasiswaProfileUsecase) CreateProfile(profile *entity.MahasiswaProfile
 
 	// validate the profile data
 	if profile.NIM == "" {
-		return nil, apperror.ValidationError("NIM")
+		return nil, apperror.ValidationError("NIM tidak boleh kosong")
 	}
 
 	if profile.Nama == "" {
-		return nil, apperror.ValidationError("Nama")
+		return nil, apperror.ValidationError("Nama tidak boleh kosong")
 	}
 
 	if profile.NoHP == "" {
-		return nil, apperror.ValidationError("NoHP")
+		return nil, apperror.ValidationError("NoHP tidak boleh kosong")
 	}
 
 	if profile.PhotoPath == "" {
-		return nil, apperror.ValidationError("PhotoPath")
+		return nil, apperror.ValidationError("PhotoPath tidak boleh kosong")
 	}
 
 	mhsProfile, err := u.repo.Create(profile)
@@ -54,16 +54,16 @@ func (u *mahasiswaProfileUsecase) GetProfile(userID int) (*entity.MahasiswaProfi
 func (u *mahasiswaProfileUsecase) UpdateProfile(profile *entity.MahasiswaProfile) (*entity.MahasiswaProfile, error) {
 	// Validasi seperti Create
 	if profile.NIM == "" {
-		return nil, apperror.ValidationError("NIM")
+		return nil, apperror.ValidationError("NIM Tidak Boleh Kosong")
 	}
 	if profile.Nama == "" {
-		return nil, apperror.ValidationError("Nama")
+		return nil, apperror.ValidationError("Nama  Tidak Boleh Kosong")
 	}
 	if profile.NoHP == "" {
-		return nil, apperror.ValidationError("NoHP")
+		return nil, apperror.ValidationError("NoHP  Tidak Boleh Kosong")
 	}
 	if profile.PhotoPath == "" {
-		return nil, apperror.ValidationError("PhotoPath")
+		return nil, apperror.ValidationError("PhotoPath  Tidak Boleh Kosong")
 	}
 
 	// Ambil data lama

@@ -29,7 +29,7 @@ func (e *CustomError) Error() string {
 func ValidationError(field string) error {
 	return &CustomError{ // Menggunakan error kustom agar kesal error input user code 400
 		Code:    400,
-		Message: fmt.Sprintf("Field '%s' is required", field),
+		Message: fmt.Sprintf("%s'", field),
 	}
 }
 
