@@ -38,6 +38,7 @@ func RegisterRoutes(r *gin.Engine, userUC user.UserUseCase, mahasiswaUC mhsDomai
 		mahasiswa.GET("/profile", mahasiswaHandler.GetProfile)
 		mahasiswa.PUT("/profile", mahasiswaHandler.UpdateProfile)
 		mahasiswa.POST("/profile/ta", profileTAHandler.AjukanTA)
+		mahasiswa.GET("/profile/ta", profileTAHandler.GetProfileTA)
 	}
 
 }

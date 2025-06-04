@@ -17,6 +17,15 @@ func NewProfilTAUseCase(r domain.ProfileTARepository) domain.ProfileTAUseCase {
 	return &profilTAUsecase{r}
 }
 
+// GetProfileTA implements domain.ProfileTAUseCase.
+func (u *profilTAUsecase) GetProfileTA(userID int) (*entity.ProfileTAWithPembimbing, error) {
+	profile, err := u.repo.GetProfileTA(userID)
+	if err != nil {
+		return nil, err
+	}
+	return profile, nil
+}
+
 func (u *profilTAUsecase) AjukanTA(userID int, judul string, dosen1ID int, dosen2ID int) (*entity.ProfielTA, error) {
 	if judul == "" {
 		return nil, apperror.ValidationError("Judul Skripsi Tidak Boleh Kosong")

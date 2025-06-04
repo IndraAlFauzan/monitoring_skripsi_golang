@@ -40,3 +40,16 @@ func (h *ProfilTAHandler) AjukanTA(c *gin.Context) {
 
 	response.WriteJSONResponse(c, http.StatusCreated, "Pengajuan TA berhasil", result)
 }
+
+func (h *ProfilTAHandler) GetProfileTA(c *gin.Context) {
+	userID := c.MustGet("user_id").(int)
+
+	result, err := h.usecase.GetProfileTA(userID)
+	if err != nil {
+		code, msg := apperror.DetermineErrorType(err)
+		response.WriteJSONResponse(c, code, msg, nil)
+		return
+	}
+
+	response.WriteJSONResponse(c, http.StatusOK, "Profile TA ditemukan", result)
+}
