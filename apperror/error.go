@@ -12,6 +12,7 @@ var (
 	ErrBadRequest = errors.New("bad request")
 	ErrNotFound   = errors.New("not found")
 	ErrInternal   = errors.New("internal server error")
+	ErrConflict   = errors.New("conflict")
 )
 
 // CustomError adalah struct untuk error kustom
@@ -33,13 +34,23 @@ func ValidationError(field string) error {
 	}
 }
 
-func ValidationErrorWithMessage(message string) error {
-	return fmt.Errorf("%s", message)
+func ErrorWithMessage(message string) error {
+	return &CustomError{ // Menggunakan error kustom agar kesal error input user code 400
+		Code:    400,
+		Message: fmt.Sprintf("%s'", message),
+	}
 }
 
 func InternalServerErrorWithMessage(message string) error {
 	return &CustomError{
 		Code:    500,
+		Message: message,
+	}
+}
+
+func ConflictError(message string) error {
+	return &CustomError{
+		Code:    409,
 		Message: message,
 	}
 }
@@ -55,6 +66,8 @@ func DetermineErrorType(err error) (int, string) {
 			return 400, "Bad Request"
 		case errors.Is(err, ErrNotFound):
 			return 404, "Not Found"
+		case errors.Is(err, ErrInternal):
+			return 409, "Conflict"
 		default:
 			return 500, "Internal Server Error"
 		}

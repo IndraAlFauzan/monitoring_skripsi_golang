@@ -26,13 +26,13 @@ func RegisterRoutes(r *gin.Engine, userUC user.UserUseCase, mahasiswaUC mhsDomai
 	}
 
 	admin := protected.Group("/admin")
-	admin.Use(middleware.RoleGuard("Admin"), middleware.AuthMiddleware())
+	admin.Use(middleware.AuthMiddleware(), middleware.RoleGuard("Admin"))
 	{
 		admin.POST("/add-user", authHandler.RegisterUser)
 	}
 
 	mahasiswa := protected.Group("/mahasiswa")
-	mahasiswa.Use(middleware.RoleGuard("Mahasiswa"), middleware.AuthMiddleware())
+	mahasiswa.Use(middleware.AuthMiddleware(), middleware.RoleGuard("Mahasiswa"))
 	{
 		mahasiswa.POST("/profile", mahasiswaHandler.CreateProfile)
 		mahasiswa.GET("/profile", mahasiswaHandler.GetProfile)

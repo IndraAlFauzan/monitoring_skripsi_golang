@@ -26,7 +26,7 @@ func (u *profilTAUsecase) GetProfileTA(userID int) (*entity.ProfileTAWithPembimb
 	return profile, nil
 }
 
-func (u *profilTAUsecase) AjukanTA(userID int, judul string, dosen1ID int, dosen2ID int) (*entity.ProfielTA, error) {
+func (u *profilTAUsecase) AjukanTA(userID int, judul string, dosen1ID int, dosen2ID int) (*entity.ProfileTA, error) {
 	if judul == "" {
 		return nil, apperror.ValidationError("Judul Skripsi Tidak Boleh Kosong")
 	}
@@ -40,11 +40,19 @@ func (u *profilTAUsecase) AjukanTA(userID int, judul string, dosen1ID int, dosen
 		return nil, apperror.ValidationError("Pembimbing tidak boleh sama")
 	}
 
-	profil := &entity.ProfielTA{
+	exists, err := u.repo.CheckProfileExist(userID)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		return nil, apperror.ConflictError("Profile TA Sudah Ada")
+	}
+
+	profil := &entity.ProfileTA{
 		UserID:          userID,
 		JudulSkripsi:    judul,
 		StatusBimbingan: "diajukan",
-		CreatedAt:       time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, time.UTC),
+		CreatedAt:       time.Now(),
 	}
 
 	createdProfil, err := u.repo.CreateProfilTA(profil)

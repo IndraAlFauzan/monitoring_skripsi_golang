@@ -50,6 +50,15 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		if !token.Valid {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status_code": http.StatusUnauthorized,
+				"message":     "Token is not valid",
+				"data":        nil,
+			})
+			return
+		}
+
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -60,8 +69,28 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("user_id", int(claims["user_id"].(float64)))
-		ctx.Set("role", claims["role"].(string))
+		userIDFloat, ok := claims["user_id"].(float64)
+		if !ok {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status_code": http.StatusUnauthorized,
+				"message":     "Invalid user_id in token",
+				"data":        nil,
+			})
+			return
+		}
+
+		role, ok := claims["role"].(string)
+		if !ok {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status_code": http.StatusUnauthorized,
+				"message":     "Invalid role in token",
+				"data":        nil,
+			})
+			return
+		}
+
+		ctx.Set("user_id", int(userIDFloat))
+		ctx.Set("role", role)
 
 		ctx.Next()
 	}
